@@ -8,33 +8,56 @@ exports.handleRequest = function (req, res) {
   if (req.method === 'GET') {
     console.log(req.url);
     if (req.url === '/') {
-      getFile('/index.html', res);
+      getFile('/index.html', res, 200);
     }
-    getFile(req.url, res);
+    getFile(req.url, res, 200);
+  }
+
+  if (req.method === 'POST') {
+    var data = '';
+    req.on('data', function(chunk) {
+      data += chunk;
+    });
+    req.on('end', function() {
+      console.log("data in post method : ", data);
+      postFile(data.slice(data.indexOf('=') + 1), res);
+    });
   }
   //res.end(archive.paths.list);
 };
 
 
-var getFile = function(filepath, res){
+var getFile = function(filepath, res, code){
   filepath = archive.paths.siteAssets + filepath;
   console.log(filepath);
   fs.exists(filepath, function (exists){
     if(exists){
-      res.writeHead(200, http.headers);
+      res.writeHead(code, http.headers);
       fs.readFile(filepath, 'utf8', function(err, data){
         if(err){
           console.log(err);
         } else {
           res.end(data);
         }
-      })
+      });
     } else {
       res.writeHead(404, http.headers);
       res.end();
     }
   });
 
+};
+
+var postFile = function(data, res) {
+
+  console.log("data in post is : ", data);
+  fs.appendFile(archive.paths.list, data + "\n", function(err) {
+    if (err) {
+      console.log(err);
+    }
+    console.log('data saved');
+    getFile('/loading.html', res, 201);
+  });
 };
 
 
