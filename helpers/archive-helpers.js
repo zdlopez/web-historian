@@ -59,23 +59,25 @@ exports.isURLArchived = function(checkUrl){
 exports.downloadUrls = function(){
   console.log(this.Urls);
   _.each(this.Urls, function(site){
-    http.get("http://" + site, function(res) {
-      console.log("Response is: ", res);
-      var data = '';
-      res.on('data', function(chunk){
-        data += chunk;
-      });
-      res.on('end', function(){
-        fs.writeFile(exports.paths.archivedSites + "/" + site, data, function(err){
-          if(err){
-            console.log(err);
-          } else {
-            console.log(site, " is written ");
-          }
+    if(!this.isURLArchived(site)){
+      http.get("http://" + site, function(res) {
+        console.log("Response is: ", res);
+        var data = '';
+        res.on('data', function(chunk){
+          data += chunk;
         });
-      });
-    }).on('error', function(e) {
-        console.log("Got error: " + e.message);
-      });
+        res.on('end', function(){
+          fs.writeFile(exports.paths.archivedSites + "/" + site, data, function(err){
+            if(err){
+              console.log(err);
+            } else {
+              console.log(site, " is written ");
+            }
+          });
+        });
+      }).on('error', function(e) {
+          console.log("Got error: " + e.message);
+        });
+    }
   });
 };
