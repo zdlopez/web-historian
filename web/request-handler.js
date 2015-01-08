@@ -56,7 +56,7 @@ var postFile = function(data, res) {
       console.log(err);
     }
     console.log('data saved');
-    getFile('/loading.html', res, 201);
+    getFile('/loading.html', res, 302);
   });
 };
 
