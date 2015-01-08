@@ -53,19 +53,29 @@ var getFile = function(filepath, res, code, flag){
 var postFile = function(data, res) {
 
   console.log("data in post is : ", data);
-  fs.appendFile(archive.paths.list, data + "\n", function(err) {
-    if (err) {
-      console.log(err);
-    }
-    console.log('data saved');
-    console.log(archive.isURLArchived(data));
+  archive.readListOfUrls();
+  if (!archive.isUrlInList(data)) {
+    fs.appendFile(archive.paths.list, data + "\n", function(err) {
+      if (err) {
+        console.log(err);
+      }
+      console.log('data saved');
+      console.log(archive.isURLArchived(data));
+      if (archive.isURLArchived(data)) {
+        var pathname = path.resolve(__dirname, '../archives/sites/');
+        getFile(pathname + "/" + data, res, 302, true);
+      } else {
+        getFile('/loading.html', res, 302);
+      }
+    });
+  } else {
     if (archive.isURLArchived(data)) {
       var pathname = path.resolve(__dirname, '../archives/sites/');
       getFile(pathname + "/" + data, res, 302, true);
     } else {
       getFile('/loading.html', res, 302);
     }
-  });
+  }
 };
 
 

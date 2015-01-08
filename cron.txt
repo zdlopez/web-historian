@@ -1,0 +1,2 @@
+*/1* * * * * /Users/student/.nvm/v0.10.26/bin/node /Users/student/Desktop/2014-12-web-historian/workers/htmlfetcher.js
+bash node -v => Where node is
