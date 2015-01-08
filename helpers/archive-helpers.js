@@ -51,12 +51,7 @@ exports.addUrlToList = function(){ //not using this in our implementation
 
 exports.isURLArchived = function(checkUrl){
   var filepath = this.paths.archivedSites + "/" + checkUrl;
-  fs.exists(filepath, function(exists) {
-    if (exists) {
-      return true;
-    }
-    return false;
-  });
+  return fs.existsSync(filepath);
 };
 
 exports.downloadUrls = function(){

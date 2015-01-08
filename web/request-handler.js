@@ -27,8 +27,10 @@ exports.handleRequest = function (req, res) {
 };
 
 
-var getFile = function(filepath, res, code){
-  filepath = archive.paths.siteAssets + filepath;
+var getFile = function(filepath, res, code, flag){
+  if (!flag) {
+    filepath = archive.paths.siteAssets + filepath;
+  }
   console.log(filepath);
   fs.exists(filepath, function (exists){
     if(exists){
@@ -56,7 +58,13 @@ var postFile = function(data, res) {
       console.log(err);
     }
     console.log('data saved');
-    getFile('/loading.html', res, 302);
+    console.log(archive.isURLArchived(data));
+    if (archive.isURLArchived(data)) {
+      var pathname = path.resolve(__dirname, '../archives/sites/');
+      getFile(pathname + "/" + data, res, 302, true);
+    } else {
+      getFile('/loading.html', res, 302);
+    }
   });
 };
 
