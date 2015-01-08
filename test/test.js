@@ -108,9 +108,8 @@ describe("html fetcher helpers", function(){
     var resultArray;
 
     fs.writeFileSync(archive.paths.list, urlArray.join("\n"));
-    archive.readListOfUrls(function(urls){
-      resultArray = urls;
-    });
+    archive.readListOfUrls();
+    resultArray = archive.Urls;
 
     waitForThen(
       function() { return resultArray; },

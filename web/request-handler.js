@@ -27,9 +27,12 @@ exports.handleRequest = function (req, res) {
 };
 
 
-var getFile = function(filepath, res, code, flag){
-  if (!flag) {
-    filepath = archive.paths.siteAssets + filepath;
+var getFile = function(file, res, code, flag){
+  var filepath;
+  if (flag === undefined) {
+    filepath = archive.paths.siteAssets + file;
+  } else {
+    filepath = file;
   }
   console.log(filepath);
   fs.exists(filepath, function (exists){
@@ -43,8 +46,23 @@ var getFile = function(filepath, res, code, flag){
         }
       });
     } else {
-      res.writeHead(404, http.headers);
-      res.end();
+      filepath = archive.paths.archivedSites + file;
+      fs.exists(filepath, function(exists) {
+        if (exists) {
+          console.log("file exists:  ", file);
+          res.writeHead(code, http.headers);
+          fs.readFile(filepath, 'utf8', function(err, data){
+            if(err){
+              console.log(err);
+            } else {
+              res.end(data);
+            }
+          });
+        } else {
+          res.writeHead(404, http.headers);
+          res.end();
+        }
+      })
     }
   });
 
