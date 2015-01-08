@@ -33,7 +33,9 @@ exports.readListOfUrls = function(){
   var data = fs.readFileSync(this.paths.list, 'utf8');
   console.log(data);
   this.Urls = data.split("\n");
-  this.Urls = this.Urls.slice(0, this.Urls.length -1);
+  if (this.Urls[this.Urls.length - 1] === "") {
+    this.Urls = this.Urls.slice(0, this.Urls.length -1);
+  }
 };
 
 exports.isUrlInList = function(checkUrl){
